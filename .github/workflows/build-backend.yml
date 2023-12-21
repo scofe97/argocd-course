@@ -8,7 +8,7 @@ on:
         default: 0.0.1-backend.00
 env:
   TAG: ${{ github.event.inputs.tag }}
-  SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+  # SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
   BACKEND_ECR_REPOSITORY: ${{ secrets.BACKEND_ECR_REPOSITORY }}
   BUILD_PATH: "~/humancat-backend-build-tmp"
  
@@ -27,13 +27,13 @@ jobs:
           echo "You entered an incorrect tag format."
           exit 1
         fi
-    - name: notice when job fails
-      if: failure()
-      uses: 8398a7/action-slack@v3.2.0
-      with:
-        status: ${{job.status}}
-        fields: repo,workflow,job
-        author_name: Github Action Slack
+    # - name: notice when job fails
+    #   if: failure()
+    #   uses: 8398a7/action-slack@v3.2.0
+    #   with:
+    #     status: ${{job.status}}
+    #     fields: repo,workflow,job
+    #     author_name: Github Action Slack
   tagging:
     needs: condition_check
     runs-on: ubuntu-latest
@@ -43,13 +43,13 @@ jobs:
       run: |
         git tag ${{ env.TAG }}
         git push origin ${{ env.TAG }}
-    - name: notice when job fails
-      if: failure()
-      uses: 8398a7/action-slack@v3.2.0
-      with:
-        status: ${{job.status}}
-        fields: repo,workflow,job
-        author_name: Github Action Slack
+    # - name: notice when job fails
+    #   if: failure()
+    #   uses: 8398a7/action-slack@v3.2.0
+    #   with:
+    #     status: ${{job.status}}
+    #     fields: repo,workflow,job
+    #     author_name: Github Action Slack
   build:
     needs: tagging
     runs-on: ubuntu-latest
@@ -84,11 +84,11 @@ jobs:
         IMAGE_TAG: ${{ env.TAG }}
       run: |
         docker push $BACKEND_ECR_REPOSITORY:$IMAGE_TAG
-    - name: Notice when job fails
-      if: always()
-      uses: 8398a7/action-slack@v3.2.0
-      with:
-        status: ${{job.status}}
-        fields: repo,workflow,job
-        author_name: Github Action Slack
+    # - name: Notice when job fails
+    #   if: always()
+    #   uses: 8398a7/action-slack@v3.2.0
+    #   with:
+    #     status: ${{job.status}}
+    #     fields: repo,workflow,job
+    #     author_name: Github Action Slack
   
