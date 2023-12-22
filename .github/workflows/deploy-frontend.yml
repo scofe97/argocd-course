@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 env:
   TAG: ${{ github.event.inputs.tag }}
-  SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+  # SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
   FRONTEND_ECR_REPOSITORY: ${{ secrets.FRONTEND_ECR_REPOSITORY }}
   BUILD_PATH: "~/humancat-frontend-build-tmp"
 
@@ -60,13 +60,13 @@ jobs:
       name: Push image to Amazon ECR
       run: |
         docker push $FRONTEND_ECR_REPOSITORY:$IMAGE_TAG
-    - name: Notice when job fails
-      if: always()
-      uses: 8398a7/action-slack@v3.2.0
-      with:
-        status: ${{job.status}}
-        fields: repo,workflow,job
-        author_name: Github Action Slack
+    # - name: Notice when job fails
+    #   if: always()
+    #   uses: 8398a7/action-slack@v3.2.0
+    #   with:
+    #     status: ${{job.status}}
+    #     fields: repo,workflow,job
+    #     author_name: Github Action Slack
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -85,11 +85,11 @@ jobs:
         message: '[DEPLOY] Update Image ${{ env.FRONTEND_ECR_REPOSITORY }}:${{ needs.build.outputs.tag }}'
         branch: master
         github_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Notice when job success
-      if: success()
-      uses: 8398a7/action-slack@v3.2.0
-      with:
-        status: ${{job.status}}
-        fields: repo,workflow,job
-        author_name: Success to Deploy on Kubernetes (${{ env.FRONTEND_ECR_REPOSITORY }}:${{ needs.build.outputs.tag }}
-        color: good
+    # - name: Notice when job success
+    #   if: success()
+    #   uses: 8398a7/action-slack@v3.2.0
+    #   with:
+    #     status: ${{job.status}}
+    #     fields: repo,workflow,job
+    #     author_name: Success to Deploy on Kubernetes (${{ env.FRONTEND_ECR_REPOSITORY }}:${{ needs.build.outputs.tag }}
+    #     color: good
